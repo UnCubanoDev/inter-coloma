@@ -16,25 +16,25 @@ const basePath = process.env.PAGES_BASE_URL
 const siteUrl = process.env.PAGES_BASE_URL || "https://uncubanodev.github.io/inter-coloma";
 
 export const metadata: Metadata = {
-  title: { default: "Liga de Fútbol 2026", template: "%s · Liga 2026" },
-  description: "Sistema de gestión para la Liga de Fútbol 2026 - 13 equipos, todos contra todos",
-  applicationName: "Liga 2026",
-  appleWebApp: { capable: true, title: "Liga 2026", statusBarStyle: "black-translucent" },
+  title: { default: "InterColoma 2026", template: "%s · InterColoma" },
+  description: "Torneo de fútbol InterColoma 2026 - 13 equipos, todos contra todos",
+  applicationName: "InterColoma",
+  appleWebApp: { capable: true, title: "InterColoma", statusBarStyle: "black-translucent" },
   formatDetection: { telephone: false },
-  manifest: `${basePath}/manifest.json`,
+  manifest: `${basePath}/manifest.webmanifest`,
   metadataBase: new URL(siteUrl),
   openGraph: {
     type: "website",
-    siteName: "Liga 2026",
-    title: "Liga de Fútbol 2026",
-    description: "Sistema de gestión para la Liga de Fútbol 2026 - 13 equipos, todos contra todos",
+    siteName: "InterColoma",
+    title: "InterColoma 2026",
+    description: "Torneo de fútbol InterColoma 2026 - 13 equipos, todos contra todos",
     url: siteUrl,
     locale: "es_ES",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Liga de Fútbol 2026",
-    description: "Sistema de gestión para la Liga de Fútbol 2026 - 13 equipos, todos contra todos",
+    title: "InterColoma 2026",
+    description: "Torneo de fútbol InterColoma 2026 - 13 equipos, todos contra todos",
   },
   other: {
     "mobile-web-app-capable": "yes",

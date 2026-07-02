@@ -35,7 +35,7 @@ export default function TopAppBar() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between h-14 md:h-16">
             <Link href="/" className="flex items-center gap-2 min-w-0">
-              <span className="text-lg md:text-xl font-bold font-oswald tracking-wide whitespace-nowrap">LIGA 2026</span>
+              <span className="text-lg md:text-xl font-bold font-oswald tracking-wide whitespace-nowrap">INTERCOLOMA</span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-1">

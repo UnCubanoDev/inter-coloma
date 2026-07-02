@@ -1,12 +1,14 @@
-const CACHE = 'liga2026-v1'
+const CACHE = 'intercoloma-v1'
+
+const BASE = new URL(self.location.href).searchParams.get('base') || '/inter-coloma'
 
 const ASSETS = [
-  '/',
-  '/calendario',
-  '/tabla',
-  '/playoffs',
-  '/admin',
-  '/manifest.json',
+  BASE + '/',
+  BASE + '/calendario',
+  BASE + '/tabla',
+  BASE + '/playoffs',
+  BASE + '/admin',
+  BASE + '/manifest.webmanifest',
 ]
 
 self.addEventListener('install', (e) => {
@@ -32,7 +34,7 @@ self.addEventListener('fetch', (e) => {
 
   e.respondWith(
     fetch(request).then((res) => {
-      if (res.ok && res.type === 'basic' && !url.pathname.startsWith('/_next/')) {
+      if (res.ok && res.type === 'basic' && !url.pathname.startsWith(BASE + '/_next/')) {
         const clone = res.clone()
         caches.open(CACHE).then((cache) => cache.put(request, clone))
       }
