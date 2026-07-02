@@ -1,16 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { useInit, useStandings, useStats, useGoleadores } from '@/lib/use-data'
-
-const numeroEmoji = (n: number) =>
-  ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟', '11️⃣', '12️⃣', '13️⃣'][n - 1] || n
+import { useInit, useStandings, useStats, useGoleadores, usePartidos } from '@/lib/use-data'
 
 export default function Home() {
   const { ready, error } = useInit()
   const { standings } = useStandings()
   const { stats } = useStats()
   const { goleadores } = useGoleadores()
+  const { partidos } = usePartidos()
+
+  const d = new Date()
+  const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  const todayMatches = partidos.filter(p => p.fecha.startsWith(todayStr))
 
   if (error) return <div className="max-w-6xl mx-auto px-4 py-12 text-center text-red-600"><p>Error: {error}</p><p className="text-sm mt-2">Verifica las variables NEXT_PUBLIC_TURSO_URL y NEXT_PUBLIC_TURSO_TOKEN</p></div>
   if (!ready) return <div className="max-w-6xl mx-auto px-4 py-12 text-center text-gray-400"><p>Cargando...</p></div>
@@ -32,20 +34,52 @@ export default function Home() {
               {stats.jugados}/{stats.total}
             </span>
           </div>
-          <div className="mt-14 text-center">
-            <h1 className="text-2xl md:text-4xl font-oswald font-bold uppercase tracking-wide">Liga de Fútbol 2026</h1>
-            <p className="text-white/70 text-sm mt-1">13 equipos · Todos contra todos</p>
-            <div className="flex flex-wrap justify-center gap-3 mt-5">
-              <Link href="/calendario" className="bg-[#bcf200] text-[#1b1c1c] font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded hover:brightness-95 transition-all">
-                Ver Calendario
-              </Link>
-              <Link href="/tabla" className="border border-white/40 text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded hover:bg-white/10 transition-all">
-                Clasificación
-              </Link>
-            </div>
-          </div>
-          <div className="absolute bottom-3 right-3 text-[0.6rem] text-white/40 font-oswald tracking-wider uppercase">
-            {(stats.total - stats.jugados) > 0 ? `${stats.total - stats.jugados} partidos pendientes` : 'Temporada completa'}
+          <div className="space-y-3">
+            {todayMatches.length === 0 ? (
+              <div className="text-center mt-6">
+                <p className="text-white/70 text-sm">No hay partidos programados para hoy</p>
+                <div className="flex flex-wrap justify-center gap-3 mt-4">
+                  <Link href="/calendario" className="bg-[#bcf200] text-[#1b1c1c] font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded hover:brightness-95 transition-all">
+                    Ver Calendario
+                  </Link>
+                  <Link href="/tabla" className="border border-white/40 text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded hover:bg-white/10 transition-all">
+                    Clasificación
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <>
+                <p className="text-white/80 text-xs uppercase tracking-wider font-semibold">
+                  Partidos de hoy
+                </p>
+                <div className="space-y-2">
+                  {todayMatches.map(m => (
+                    <div key={m.id} className="flex items-center justify-between bg-white/10 rounded-lg px-4 py-2.5">
+                      <div className="flex-1 text-sm font-medium truncate">{m.equipoLocal.nombre}</div>
+                      <div className="flex items-center gap-2 mx-3 shrink-0">
+                        {m.jugado ? (
+                          <span className="text-base font-oswald font-bold">{m.golesLocal} - {m.golesVisitante}</span>
+                        ) : (
+                          <span className="text-[0.6rem] text-white/50 uppercase tracking-wider">vs</span>
+                        )}
+                      </div>
+                      <div className="flex-1 text-sm font-medium truncate text-right">{m.equipoVisitante.nombre}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <Link href="/calendario" className="bg-[#bcf200] text-[#1b1c1c] font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded hover:brightness-95 transition-all">
+                    Ver Calendario
+                  </Link>
+                  <Link href="/tabla" className="border border-white/40 text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded hover:bg-white/10 transition-all">
+                    Clasificación
+                  </Link>
+                </div>
+                <p className="text-[0.55rem] text-white/40 text-center font-oswald tracking-wider uppercase">
+                  {(stats.total - stats.jugados) > 0 ? `${stats.total - stats.jugados} partidos pendientes` : 'Temporada completa'}
+                </p>
+              </>
+            )}
           </div>
         </div>
 
