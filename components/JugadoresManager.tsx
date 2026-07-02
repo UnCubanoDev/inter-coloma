@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { useJugadoresByEquipos } from '@/lib/use-data'
 import { addJugador, updateJugador, deleteJugador } from '@/lib/data'
 import { useAdmin } from './AuthGuard'
@@ -18,6 +19,7 @@ export function JugadoresManager() {
     if (!addName.trim()) return
     await addJugador(equipoId, addName.trim(), addNum ? parseInt(addNum) : undefined, addPos.trim() || undefined)
     setAddName(''); setAddNum(''); setAddPos('')
+    toast.success(`${addName.trim()} agregado`)
     refresh()
   }
 
@@ -25,12 +27,14 @@ export function JugadoresManager() {
     if (!editing || !editing.nombre.trim()) return
     await updateJugador(id, editing.nombre.trim(), editing.numero ? parseInt(editing.numero) : undefined, editing.posicion.trim() || undefined)
     setEditing(null)
+    toast.success('Jugador actualizado')
     refresh()
   }
 
   const handleDelete = async (id: number, nombre: string) => {
     if (!confirm(`¿Eliminar a ${nombre}?`)) return
     await deleteJugador(id)
+    toast.success(`${nombre} eliminado`)
     refresh()
   }
 

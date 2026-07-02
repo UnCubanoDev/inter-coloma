@@ -7,7 +7,9 @@ const tabs = [
   { href: '/', label: 'Inicio', icon: '🏠' },
   { href: '/calendario', label: 'Calendario', icon: '📅' },
   { href: '/tabla', label: 'Estadísticas', icon: '📊' },
+  { href: '/playoffs', label: 'Playoffs', icon: '🏆' },
   { href: '/equipos', label: 'Equipos', icon: '👥' },
+  { href: '/admin', label: 'Admin', icon: '⚙️' },
 ]
 
 export default function BottomNav() {
@@ -22,6 +24,7 @@ export default function BottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
+              aria-label={tab.label}
               className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-lg transition-all relative ${
                 isActive ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'
               }`}
@@ -29,7 +32,7 @@ export default function BottomNav() {
               {isActive && (
                 <span className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-[#bcf200] rounded-full" />
               )}
-              <span className="text-lg">{tab.icon}</span>
+              <span className="text-lg" aria-hidden="true">{tab.icon}</span>
               <span className={`text-[0.625rem] font-semibold uppercase tracking-wider ${
                 isActive ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'
               }`}>

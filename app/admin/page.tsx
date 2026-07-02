@@ -56,9 +56,9 @@ export default function AdminPage() {
       )}
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 dark:border-gray-700 mb-5">
+      <div role="tablist" aria-label="Secciones de administración" className="flex border-b border-gray-200 dark:border-gray-700 mb-5">
         {(['partidos', 'playoffs', 'jugadores'] as Tab[]).map(t => (
-          <button key={t} onClick={() => setTab(t)}
+          <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)}
             className={`segment-tab text-xs md:text-sm ${tab === t ? 'active' : ''}`}>
             {t === 'partidos' ? '📋 Partidos' : t === 'playoffs' ? '🏆 Playoffs' : '👥 Jugadores'}
           </button>

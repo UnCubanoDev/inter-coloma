@@ -49,7 +49,7 @@ export default function Home() {
               </div>
             ) : (
               <>
-                <div className="space-y-2 mt-6">
+                <div className="space-y-2 mt-8">
                   {todayMatches.map(m => (
                     <div key={m.id} className="flex items-center justify-between bg-white/10 rounded-lg px-4 py-2.5">
                       <div className="flex-1 text-sm font-medium truncate">{m.equipoLocal.nombre}</div>
@@ -64,14 +64,6 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                {/*<div className="flex flex-wrap justify-center gap-3">*/}
-                {/*  <Link href="/calendario" className="bg-[#bcf200] text-[#1b1c1c] font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded hover:brightness-95 transition-all">*/}
-                {/*    Ver Calendario*/}
-                {/*  </Link>*/}
-                {/*  <Link href="/tabla" className="border border-white/40 text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded hover:bg-white/10 transition-all">*/}
-                {/*    Clasificación*/}
-                {/*  </Link>*/}
-                {/*</div>*/}
                 <p className="text-[0.55rem] text-white/40 text-center font-oswald tracking-wider uppercase">
                   {(stats.total - stats.jugados) > 0 ? `${stats.total - stats.jugados} partidos pendientes` : 'Temporada completa'}
                 </p>

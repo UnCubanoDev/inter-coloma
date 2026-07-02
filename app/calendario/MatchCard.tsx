@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { updatePartido, resetPartido } from '@/lib/data'
 import { useAdmin } from '@/components/AuthGuard'
 import MatchDetailModal from '@/components/MatchDetailModal'
@@ -22,6 +23,7 @@ export function MatchCard({ match, onUpdate }: { match: PartidoRow; onUpdate: ()
     setSaving(true)
     await updatePartido(match.id, gl, gv)
     setSaving(false)
+    toast.success(isPlayed ? 'Resultado actualizado' : 'Resultado guardado')
     onUpdate()
   }
 
@@ -29,6 +31,7 @@ export function MatchCard({ match, onUpdate }: { match: PartidoRow; onUpdate: ()
     if (!admin) return
     await resetPartido(match.id)
     setGL(''); setGV('')
+    toast.success('Resultado revertido')
     onUpdate()
   }
 

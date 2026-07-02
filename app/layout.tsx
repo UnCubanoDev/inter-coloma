@@ -1,20 +1,41 @@
 import type { Metadata } from "next";
+import { Oswald, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import TopAppBar from "@/components/TopAppBar";
 import BottomNav from "@/components/BottomNav";
 import PwaRegister from "@/components/PwaRegister";
+import { Toaster } from "sonner";
+
+const oswald = Oswald({ subsets: ["latin"], display: "swap", variable: "--font-oswald" });
+const hanken = Hanken_Grotesk({ subsets: ["latin"], display: "swap", variable: "--font-hanken" });
 
 const basePath = process.env.PAGES_BASE_URL
   ? new URL(process.env.PAGES_BASE_URL).pathname.replace(/\/$/, "")
   : "/inter-coloma";
 
+const siteUrl = process.env.PAGES_BASE_URL || "https://uncubanodev.github.io/inter-coloma";
+
 export const metadata: Metadata = {
-  title: "Liga de Fútbol 2026",
+  title: { default: "Liga de Fútbol 2026", template: "%s · Liga 2026" },
   description: "Sistema de gestión para la Liga de Fútbol 2026 - 13 equipos, todos contra todos",
   applicationName: "Liga 2026",
   appleWebApp: { capable: true, title: "Liga 2026", statusBarStyle: "black-translucent" },
   formatDetection: { telephone: false },
   manifest: `${basePath}/manifest.json`,
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    type: "website",
+    siteName: "Liga 2026",
+    title: "Liga de Fútbol 2026",
+    description: "Sistema de gestión para la Liga de Fútbol 2026 - 13 equipos, todos contra todos",
+    url: siteUrl,
+    locale: "es_ES",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Liga de Fútbol 2026",
+    description: "Sistema de gestión para la Liga de Fútbol 2026 - 13 equipos, todos contra todos",
+  },
   other: {
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
@@ -28,7 +49,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es">
+    <html lang="es" className={`${oswald.variable} ${hanken.variable}`}>
       <head>
         <link rel="icon" type="image/svg+xml" href={`${basePath}/icons/icon-192.svg`} />
         <link rel="apple-touch-icon" href={`${basePath}/icons/icon-192.svg`} />
@@ -39,6 +60,7 @@ export default function RootLayout({
         <main className="flex-1 overflow-y-auto">{children}</main>
         <BottomNav />
         <PwaRegister />
+        <Toaster position="top-center" richColors closeButton />
       </body>
     </html>
   );

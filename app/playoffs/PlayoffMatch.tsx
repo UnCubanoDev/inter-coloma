@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { updatePlayoff, advancePlayoff, resetPlayoff } from '@/lib/data'
 import { useAdmin } from '@/components/AuthGuard'
 import { PlayoffRow } from '@/lib/use-data'
@@ -22,11 +23,25 @@ export function PlayoffMatch({ match, onUpdate }: { match: PlayoffRow; onUpdate:
     setSaving(true)
     await updatePlayoff(match.id, gl, gv)
     setSaving(false)
+    toast.success(isPlayed ? 'Resultado actualizado' : 'Resultado guardado')
     onUpdate()
   }
 
-  const handleAdvance = async () => { if (admin) { await advancePlayoff(match.id); onUpdate() } }
-  const handleReset = async () => { if (admin) { await resetPlayoff(match.id); setGL(''); setGV(''); onUpdate() } }
+  const handleAdvance = async () => {
+    if (admin) {
+      await advancePlayoff(match.id)
+      toast.success('Ganador avanzado')
+      onUpdate()
+    }
+  }
+  const handleReset = async () => {
+    if (admin) {
+      await resetPlayoff(match.id)
+      setGL(''); setGV('')
+      toast.success('Partido reseteado')
+      onUpdate()
+    }
+  }
 
   if (!isReady) {
     return (

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { toast } from 'sonner'
 import { useEventos, useJugadores, PartidoRow, EventoRow } from '@/lib/use-data'
 import { addEvento, removeEvento } from '@/lib/data'
 import { useAdmin } from './AuthGuard'
@@ -45,14 +46,20 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') onClose()
+  }, [onClose])
+
   useEffect(() => {
     if (open) {
       refreshEventos()
       setSelectedJugador('')
       setSelectedTipo('gol')
       setError('')
+      document.addEventListener('keydown', handleKeyDown)
+      return () => document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [open, refreshEventos])
+  }, [open, refreshEventos, handleKeyDown])
 
   if (!open) return null
 
@@ -65,6 +72,7 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
       const equipoId = selectedEquipo === 'local' ? match.equipoLocalId : match.equipoVisitanteId
       await addEvento(match.id, jugadorId, equipoId, selectedTipo)
       setSelectedJugador('')
+      toast.success('Evento agregado')
       await refreshEventos()
     } catch (e: any) {
       setError(e?.message || 'Error al agregar evento')
@@ -75,6 +83,7 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
 
   const handleRemoveEvent = async (id: number) => {
     await removeEvento(id)
+    toast.success('Evento eliminado')
     refreshEventos()
   }
 

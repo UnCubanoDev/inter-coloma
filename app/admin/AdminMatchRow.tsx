@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { resetPartido, deletePartido } from '@/lib/data'
 import { useAdmin } from '@/components/AuthGuard'
 import { PartidoRow } from '@/lib/use-data'
@@ -19,6 +20,7 @@ export function AdminMatchRow({ match, onUpdate }: { match: PartidoRow; onUpdate
     if (!confirm('¿Resetear este partido?')) return
     setBusy(true)
     await resetPartido(match.id)
+    toast.success('Partido reseteado')
     onUpdate()
     setBusy(false)
   }
@@ -28,6 +30,7 @@ export function AdminMatchRow({ match, onUpdate }: { match: PartidoRow; onUpdate
     if (!confirm('¿Eliminar este partido permanentemente?')) return
     setBusy(true)
     await deletePartido(match.id)
+    toast.success('Partido eliminado')
     onUpdate()
     setBusy(false)
   }

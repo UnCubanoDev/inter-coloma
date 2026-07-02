@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { resetAllData } from '@/lib/data'
 
 export function ResetButton({ onReset }: { onReset: () => void }) {
@@ -11,6 +12,7 @@ export function ResetButton({ onReset }: { onReset: () => void }) {
     if (!confirm('⚠️ CONFIRMACIÓN FINAL: Esta acción NO se puede deshacer.')) return
     setBusy(true)
     await resetAllData()
+    toast.success('Torneo reiniciado')
     onReset()
     setBusy(false)
   }

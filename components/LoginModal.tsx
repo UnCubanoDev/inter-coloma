@@ -1,12 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { login } from '@/lib/auth'
 
 export default function LoginModal({ onClose }: { onClose: () => void }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
   const [busy, setBusy] = useState(false)
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') onClose()
+  }, [onClose])
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,7 +38,9 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
+            <label htmlFor="admin-password" className="sr-only">Contraseña de administrador</label>
             <input
+              id="admin-password"
               type="password"
               value={password}
               onChange={e => { setPassword(e.target.value); setError(false) }}

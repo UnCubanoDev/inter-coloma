@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { setupPlayoffs } from '@/lib/data'
 
 export function SetupPlayoffs({ needsSetup, onSetup }: { needsSetup: boolean; onSetup: () => void }) {
@@ -11,6 +12,7 @@ export function SetupPlayoffs({ needsSetup, onSetup }: { needsSetup: boolean; on
   const handleClick = async () => {
     setBusy(true)
     await setupPlayoffs()
+    toast.success('Playoffs configurados')
     onSetup()
     setBusy(false)
   }

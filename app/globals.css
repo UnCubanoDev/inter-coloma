@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -61,13 +60,20 @@
 body {
   background: var(--surface);
   color: var(--on-surface);
-  font-family: 'Hanken Grotesk', sans-serif;
+  font-family: var(--font-hanken), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
 }
 
-.font-oswald { font-family: 'Oswald', sans-serif; }
+.font-oswald { font-family: var(--font-oswald), sans-serif; }
+
+/* Focus visible for keyboard users */
+*:focus-visible {
+  outline: 2px solid var(--secondary-container);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 
 /* Safe areas for notched devices */
 .safe-area-top {
@@ -98,7 +104,7 @@ body {
   background: transparent;
   outline: none;
   padding: 0.625rem 0;
-  font-family: 'Hanken Grotesk', sans-serif;
+  font-family: var(--font-hanken), sans-serif;
   font-size: 1rem;
   color: var(--on-surface);
   width: 100%;
@@ -125,7 +131,7 @@ body {
   border: none;
   cursor: pointer;
   transition: all 0.15s;
-  font-family: 'Hanken Grotesk', sans-serif;
+  font-family: var(--font-hanken), sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -144,7 +150,7 @@ body {
   border: 1px solid var(--primary);
   cursor: pointer;
   transition: all 0.15s;
-  font-family: 'Hanken Grotesk', sans-serif;
+  font-family: var(--font-hanken), sans-serif;
 }
 
 .btn-secondary:active { transform: scale(0.97); }
@@ -225,7 +231,7 @@ body {
 
 /* Segment tabs */
 .segment-tab {
-  font-family: 'Oswald', sans-serif;
+  font-family: var(--font-oswald), sans-serif;
   font-weight: 500;
   font-size: 0.875rem;
   text-transform: uppercase;
@@ -267,7 +273,7 @@ body {
 .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
 
 /* Score display */
-.score-display { font-family: 'Oswald', sans-serif; font-weight: 700; line-height: 1; }
+.score-display { font-family: var(--font-oswald), sans-serif; font-weight: 700; line-height: 1; }
 
 /* Remove number input spinners */
 input[type="number"]::-webkit-inner-spin-button,

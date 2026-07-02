@@ -26,7 +26,7 @@ export default function TablaPage() {
         <p className="text-[0.75rem] text-gray-500 mt-0.5">Temporada Regular · Clasificación y líderes</p>
       </div>
 
-      <div className="flex border-b border-gray-200 dark:border-gray-700 mb-5 overflow-x-auto scrollbar-none">
+      <div role="tablist" aria-label="Secciones de estadísticas" className="flex border-b border-gray-200 dark:border-gray-700 mb-5 overflow-x-auto scrollbar-none">
         {([
           { key: 'posiciones', label: '📊 Clasificación' },
           { key: 'goleadores', label: '⚽ Goleadores' },
@@ -34,7 +34,7 @@ export default function TablaPage() {
           { key: 'tarjetas', label: '🟡 Tarjetas' },
           { key: 'autogoles', label: '⚠️ Autogoles' },
         ] as { key: Tab; label: string }[]).map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)}
+          <button key={t.key} role="tab" aria-selected={tab === t.key} onClick={() => setTab(t.key)}
             className={`segment-tab text-xs md:text-sm whitespace-nowrap ${tab === t.key ? 'active' : ''}`}>
             {t.label}
           </button>
