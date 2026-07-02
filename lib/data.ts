@@ -174,8 +174,12 @@ export async function deleteJugador(id: number) {
   await client.execute({ sql: 'DELETE FROM jugadores WHERE id = ?', args: [id] })
 }
 
+export const TIPOS_EVENTO = ['gol', 'asistencia', 'amarilla', 'roja', 'autogol'] as const
+export type TipoEvento = typeof TIPOS_EVENTO[number]
+
 // ── Eventos ────────────────────────────────────────────
 export async function addEvento(partidoId: number, jugadorId: number, equipoId: number, tipo: string, minuto?: number) {
+  if (!TIPOS_EVENTO.includes(tipo as any)) throw new Error(`Tipo de evento inválido: ${tipo}`)
   const client = getDb()
   await client.execute({
     sql: 'INSERT INTO eventos_partido (partidoId, jugadorId, equipoId, tipo, minuto) VALUES (?, ?, ?, ?, ?)',
@@ -212,6 +216,21 @@ export async function getGoleadores(): Promise<GoleadorRow[]> {
     JOIN jugadores j ON j.id = e.jugadorId
     JOIN equipos eq ON eq.id = e.equipoId
     WHERE e.tipo = 'gol'
+    GROUP BY j.id
+    ORDER BY goles DESC
+  `)
+  return r.rows as any as GoleadorRow[]
+}
+
+export async function getAutogoles(): Promise<GoleadorRow[]> {
+  const client = getDb()
+  const r = await client.execute(`
+    SELECT j.id as jugadorId, j.nombre, j.numero, eq.id as equipoId, eq.nombre as equipoNombre,
+           COUNT(*) as goles
+    FROM eventos_partido e
+    JOIN jugadores j ON j.id = e.jugadorId
+    JOIN equipos eq ON eq.id = e.equipoId
+    WHERE e.tipo = 'autogol'
     GROUP BY j.id
     ORDER BY goles DESC
   `)

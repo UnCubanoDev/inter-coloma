@@ -16,6 +16,7 @@ const tipoLabels: Record<string, string> = {
   asistencia: '🎯 Asistencia',
   amarilla: '🟡 Amarilla',
   roja: '🔴 Roja',
+  autogol: '⚠️ Autogol',
 }
 
 const tipoColors: Record<string, string> = {
@@ -23,7 +24,10 @@ const tipoColors: Record<string, string> = {
   asistencia: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
   amarilla: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-700',
   roja: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-700',
+  autogol: 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-700',
 }
+
+const tipoBg = (tipo: string) => tipoColors[tipo] || 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600'
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr + 'T12:00:00')
@@ -87,7 +91,6 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
         </div>
 
         <div className="p-5 space-y-5">
-
           {/* Score header */}
           <div className="flex items-center justify-center gap-4 py-3">
             <div className="text-right flex-1">
@@ -127,6 +130,7 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
                       className="input-bb text-sm flex-1 min-w-[80px]">
                       <option value="gol">⚽ Gol</option>
                       <option value="asistencia">🎯 Asistencia</option>
+                      <option value="autogol">⚠️ Autogol</option>
                       <option value="amarilla">🟡 Amarilla</option>
                       <option value="roja">🔴 Roja</option>
                     </select>
@@ -142,6 +146,11 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
                     <button onClick={handleAddEvent} disabled={!selectedJugador}
                       className="btn-primary text-[0.55rem] py-2 px-3 disabled:opacity-40">Agregar</button>
                   </div>
+                  {selectedTipo === 'autogol' && (
+                    <p className="text-[0.6rem] text-orange-600 dark:text-orange-400 flex items-center gap-1">
+                      ⚠️ El autogol se registrará a favor de <strong>{selectedEquipo === 'local' ? match.equipoVisitante.nombre : match.equipoLocal.nombre}</strong>
+                    </p>
+                  )}
                 </div>
               )}
             </>
@@ -153,7 +162,6 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
               <p className="text-[0.65rem] mt-1">Guarda el resultado primero</p>
             </div>
           )}
-
         </div>
       </div>
     </div>
@@ -169,10 +177,13 @@ function EventosSection({ title, eventos, admin, onRemove }: {
       <h3 className="text-[0.6rem] font-bold uppercase tracking-wider text-gray-500 mb-2">{title}</h3>
       <div className="space-y-1">
         {eventos.map(ev => (
-          <div key={ev.id} className={`flex items-center justify-between gap-2 px-3 py-1.5 rounded border text-sm ${tipoColors[ev.tipo] || 'bg-gray-50'}`}>
+          <div key={ev.id} className={`flex items-center justify-between gap-2 px-3 py-1.5 rounded border text-sm ${tipoBg(ev.tipo)}`}>
             <div className="flex items-center gap-2 min-w-0">
               <span>{tipoLabels[ev.tipo] || ev.tipo}</span>
               <span className="font-medium truncate">{ev.jugadorNombre}</span>
+              {ev.tipo === 'autogol' && (
+                <span className="text-[0.5rem] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 border border-orange-300 dark:border-orange-600 px-1 py-0.5 rounded">En contra</span>
+              )}
               {ev.minuto && <span className="text-[0.6rem] text-gray-500 shrink-0">{ev.minuto}&apos;</span>}
             </div>
             {admin && (

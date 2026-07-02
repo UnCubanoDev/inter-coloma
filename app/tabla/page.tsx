@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useInit, useStandings } from '@/lib/use-data'
-import { useGoleadores, useAsistidores, useTarjetas } from '@/lib/use-data'
+import { useGoleadores, useAsistidores, useTarjetas, useAutogoles } from '@/lib/use-data'
 import TablaPosiciones from '@/components/TablaPosiciones'
 
-type Tab = 'posiciones' | 'goleadores' | 'asistidores' | 'tarjetas'
+type Tab = 'posiciones' | 'goleadores' | 'asistidores' | 'tarjetas' | 'autogoles'
 
 export default function TablaPage() {
   const { ready, error } = useInit()
@@ -13,6 +13,7 @@ export default function TablaPage() {
   const { goleadores } = useGoleadores()
   const { asistidores } = useAsistidores()
   const { tarjetas } = useTarjetas()
+  const { autogoles } = useAutogoles()
   const [tab, setTab] = useState<Tab>('posiciones')
 
   if (error) return <div className="max-w-6xl mx-auto px-4 py-12 text-center"><p className="text-red-600 font-semibold">Error: {error}</p><p className="text-sm text-gray-500 mt-2">Verifica NEXT_PUBLIC_TURSO_URL y NEXT_PUBLIC_TURSO_TOKEN</p></div>
@@ -31,6 +32,7 @@ export default function TablaPage() {
           { key: 'goleadores', label: '⚽ Goleadores' },
           { key: 'asistidores', label: '🎯 Asistidores' },
           { key: 'tarjetas', label: '🟡 Tarjetas' },
+          { key: 'autogoles', label: '⚠️ Autogoles' },
         ] as { key: Tab; label: string }[]).map(t => (
           <button key={t.key} onClick={() => setTab(t.key)}
             className={`segment-tab text-xs md:text-sm whitespace-nowrap ${tab === t.key ? 'active' : ''}`}>
@@ -38,6 +40,17 @@ export default function TablaPage() {
           </button>
         ))}
       </div>
+
+      {tab === 'autogoles' && (
+        <LeaderboardCard
+          title="Autogoles"
+          emptyMsg="No hay autogoles registrados"
+          rows={autogoles.map(a => ({
+            key: a.jugadorId, nombre: a.nombre, equipo: a.equipoNombre, numero: a.numero,
+            value: a.goles, label: 'autogoles',
+          }))}
+        />
+      )}
 
       {tab === 'posiciones' && (
         <div className="card overflow-hidden">

@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS eventos_partido (
   partidoId INTEGER NOT NULL,
   jugadorId INTEGER NOT NULL,
   equipoId INTEGER NOT NULL,
-  tipo TEXT NOT NULL CHECK(tipo IN ('gol','asistencia','amarilla','roja')),
+  tipo TEXT NOT NULL,
   minuto INTEGER,
   FOREIGN KEY (partidoId) REFERENCES partidos(id),
   FOREIGN KEY (jugadorId) REFERENCES jugadores(id),

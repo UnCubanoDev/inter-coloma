@@ -202,6 +202,29 @@ export function useEventos(partidoId: number | null) {
   return { eventos, loading, refresh }
 }
 
+export function useAutogoles() {
+  const [data_, setData_] = useState<GoleadorRow[]>([])
+  const [loading, setLoading] = useState(true)
+  const mounted = useRef(true)
+
+  const refresh = useCallback(async () => {
+    setLoading(true)
+    await ensureDbReady()
+    if (!mounted.current) return
+    const a = await data.getAutogoles()
+    if (!mounted.current) return
+    setData_(a)
+    setLoading(false)
+  }, [])
+
+  useEffect(() => {
+    mounted.current = true
+    refresh()
+    return () => { mounted.current = false }
+  }, [refresh])
+  return { autogoles: data_, loading, refresh }
+}
+
 export function useGoleadores() {
   const [data_, setData_] = useState<GoleadorRow[]>([])
   const [loading, setLoading] = useState(true)
