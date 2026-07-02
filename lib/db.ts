@@ -176,6 +176,39 @@ export async function initSchema() {
   for (const stmt of statements) {
     await client.execute(stmt + ';')
   }
+  await migrateEventosTable()
+}
+
+async function migrateEventosTable() {
+  const client = getDb()
+  const r = await client.execute(
+    "SELECT sql FROM sqlite_master WHERE type='table' AND name='eventos_partido'"
+  )
+  const createSql: string = (r.rows[0] as any)?.sql || ''
+  if (!createSql.includes('CHECK')) return
+
+  await client.execute('PRAGMA foreign_keys = OFF')
+
+  await client.execute('DROP TABLE IF EXISTS eventos_partido_new')
+  await client.execute(`
+    CREATE TABLE eventos_partido_new (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      partidoId INTEGER NOT NULL,
+      jugadorId INTEGER NOT NULL,
+      equipoId INTEGER NOT NULL,
+      tipo TEXT NOT NULL,
+      minuto INTEGER,
+      FOREIGN KEY (partidoId) REFERENCES partidos(id),
+      FOREIGN KEY (jugadorId) REFERENCES jugadores(id),
+      FOREIGN KEY (equipoId) REFERENCES equipos(id)
+    )
+  `)
+
+  await client.execute('INSERT INTO eventos_partido_new SELECT * FROM eventos_partido')
+  await client.execute('DROP TABLE eventos_partido')
+  await client.execute('ALTER TABLE eventos_partido_new RENAME TO eventos_partido')
+
+  await client.execute('PRAGMA foreign_keys = ON')
 }
 
 export async function ensureSeedData() {
