@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useInit, useStandings, useStats } from '@/lib/use-data'
+import { useInit, useStandings, useStats, useGoleadores } from '@/lib/use-data'
 
 const numeroEmoji = (n: number) =>
   ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟', '11️⃣', '12️⃣', '13️⃣'][n - 1] || n
@@ -10,11 +10,12 @@ export default function Home() {
   const { ready, error } = useInit()
   const { standings } = useStandings()
   const { stats } = useStats()
+  const { goleadores } = useGoleadores()
 
   if (error) return <div className="max-w-6xl mx-auto px-4 py-12 text-center text-red-600"><p>Error: {error}</p><p className="text-sm mt-2">Verifica las variables NEXT_PUBLIC_TURSO_URL y NEXT_PUBLIC_TURSO_TOKEN</p></div>
   if (!ready) return <div className="max-w-6xl mx-auto px-4 py-12 text-center text-gray-400"><p>Cargando...</p></div>
 
-  const topScorers = standings.filter(t => t.jj > 0).sort((a, b) => b.gf - a.gf).slice(0, 3)
+  const topScorers = goleadores.slice(0, 5)
   const ultimos = standings.filter(t => t.jj > 0).sort((a, b) => b.pts - a.pts).slice(0, 5)
 
   return (
@@ -92,14 +93,14 @@ export default function Home() {
             <p className="text-sm text-gray-400 text-center py-4">Sin datos</p>
           ) : (
             <div className="space-y-3">
-              {topScorers.map((t, i) => (
-                <div key={t.id} className="flex items-center gap-3">
+              {topScorers.map((p, i) => (
+                <div key={p.jugadorId} className="flex items-center gap-3">
                   <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-[0.65rem] font-bold ${i === 0 ? 'bg-yellow-400 text-yellow-900' : i === 1 ? 'bg-gray-300 text-gray-700' : 'bg-amber-600 text-white'}`}>{i + 1}</span>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">{t.nombre}</div>
-                    <div className="text-[0.6rem] text-gray-400 uppercase tracking-wider">{numeroEmoji(t.numero)} {t.jg}V · {t.je}E · {t.jp}D</div>
+                    <div className="text-sm font-medium truncate">{p.nombre}</div>
+                    <div className="text-[0.6rem] text-gray-400 truncate">{p.numero ? `#${p.numero} · ` : ''}{p.equipoNombre}</div>
                   </div>
-                  <span className="font-oswald font-bold text-lg">{t.gf}</span>
+                  <span className="font-oswald font-bold text-lg">{p.goles}</span>
                 </div>
               ))}
             </div>
