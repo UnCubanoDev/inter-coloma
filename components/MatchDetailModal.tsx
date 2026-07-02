@@ -42,12 +42,15 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
   const [selectedJugador, setSelectedJugador] = useState('')
   const [selectedTipo, setSelectedTipo] = useState('gol')
   const [selectedEquipo, setSelectedEquipo] = useState<'local' | 'visitante'>('local')
+  const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     if (open) {
       refreshEventos()
       setSelectedJugador('')
       setSelectedTipo('gol')
+      setError('')
     }
   }, [open, refreshEventos])
 
@@ -55,11 +58,19 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
 
   const handleAddEvent = async () => {
     if (!selectedJugador) return
-    const jugadorId = parseInt(selectedJugador)
-    const equipoId = selectedEquipo === 'local' ? match.equipoLocalId : match.equipoVisitanteId
-    await addEvento(match.id, jugadorId, equipoId, selectedTipo)
-    setSelectedJugador('')
-    refreshEventos()
+    setSaving(true)
+    setError('')
+    try {
+      const jugadorId = parseInt(selectedJugador)
+      const equipoId = selectedEquipo === 'local' ? match.equipoLocalId : match.equipoVisitanteId
+      await addEvento(match.id, jugadorId, equipoId, selectedTipo)
+      setSelectedJugador('')
+      await refreshEventos()
+    } catch (e: any) {
+      setError(e?.message || 'Error al agregar evento')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleRemoveEvent = async (id: number) => {
@@ -143,14 +154,15 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
                         <option key={j.id} value={j.id}>{j.numero ? `#${j.numero} ` : ''}{j.nombre}</option>
                       ))}
                     </select>
-                    <button onClick={handleAddEvent} disabled={!selectedJugador}
-                      className="btn-primary text-[0.55rem] py-2 px-3 disabled:opacity-40">Agregar</button>
+                    <button onClick={handleAddEvent} disabled={!selectedJugador || saving}
+                      className="btn-primary text-[0.55rem] py-2 px-3 disabled:opacity-40">{saving ? 'Guardando...' : 'Agregar'}</button>
                   </div>
                   {selectedTipo === 'autogol' && (
                     <p className="text-[0.6rem] text-orange-600 dark:text-orange-400 flex items-center gap-1">
                       ⚠️ El autogol se registrará a favor de <strong>{selectedEquipo === 'local' ? match.equipoVisitante.nombre : match.equipoLocal.nombre}</strong>
                     </p>
                   )}
+                  {error && <p className="text-[0.6rem] text-red-600">{error}</p>}
                 </div>
               )}
             </>
