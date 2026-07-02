@@ -181,28 +181,37 @@ export async function initSchema() {
 
 async function migrateEventosTable() {
   const client = getDb()
-  const r = await client.execute(
-    "SELECT sql FROM sqlite_master WHERE type='table' AND name='eventos_partido'"
-  )
-  const createSql: string = (r.rows[0] as any)?.sql || ''
-  if (!createSql.includes('CHECK')) return
 
+  // Detect CHECK constraint by attempting an autogol insert (FK will fail, but CHECK fires first)
+  try {
+    await client.execute({
+      sql: "INSERT INTO eventos_partido (partidoId, jugadorId, equipoId, tipo) VALUES (?, ?, ?, ?)",
+      args: [-1, -1, -1, 'autogol'],
+    })
+    // Shouldn't reach here (FK would fail), but clean up just in case
+    await client.execute("DELETE FROM eventos_partido WHERE partidoId = -1")
+    return
+  } catch (e: any) {
+    const msg: string = e?.message || e?.toString() || ''
+    // If the error is about CHECK constraint, autogol is blocked → migrate
+    if (!msg.includes('CHECK constraint failed')) return
+  }
+
+  // Recreate table without CHECK constraint
   await client.execute('PRAGMA foreign_keys = OFF')
 
   await client.execute('DROP TABLE IF EXISTS eventos_partido_new')
-  await client.execute(`
-    CREATE TABLE eventos_partido_new (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      partidoId INTEGER NOT NULL,
-      jugadorId INTEGER NOT NULL,
-      equipoId INTEGER NOT NULL,
-      tipo TEXT NOT NULL,
-      minuto INTEGER,
-      FOREIGN KEY (partidoId) REFERENCES partidos(id),
-      FOREIGN KEY (jugadorId) REFERENCES jugadores(id),
-      FOREIGN KEY (equipoId) REFERENCES equipos(id)
-    )
-  `)
+  await client.execute(`CREATE TABLE eventos_partido_new (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    partidoId INTEGER NOT NULL,
+    jugadorId INTEGER NOT NULL,
+    equipoId INTEGER NOT NULL,
+    tipo TEXT NOT NULL,
+    minuto INTEGER,
+    FOREIGN KEY (partidoId) REFERENCES partidos(id),
+    FOREIGN KEY (jugadorId) REFERENCES jugadores(id),
+    FOREIGN KEY (equipoId) REFERENCES equipos(id)
+  )`)
 
   await client.execute('INSERT INTO eventos_partido_new SELECT * FROM eventos_partido')
   await client.execute('DROP TABLE eventos_partido')
