@@ -32,13 +32,15 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - id: pages
+        uses: actions/configure-pages@v5
+
       - run: pnpm build
         env:
+          PAGES_BASE_URL: ${{ steps.pages.outputs.base_url }}
           NEXT_PUBLIC_TURSO_URL: ${{ secrets.TURSO_URL }}
           NEXT_PUBLIC_TURSO_TOKEN: ${{ secrets.TURSO_TOKEN }}
           NEXT_PUBLIC_ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-
-      - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
