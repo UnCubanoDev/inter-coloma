@@ -1,0 +1,41 @@
+import type { Metadata } from "next";
+import "./globals.css";
+import TopAppBar from "@/components/TopAppBar";
+import BottomNav from "@/components/BottomNav";
+import PwaRegister from "@/components/PwaRegister";
+
+export const metadata: Metadata = {
+  title: "Liga de Fútbol 2026",
+  description: "Sistema de gestión para la Liga de Fútbol 2026 - 13 equipos, todos contra todos",
+  applicationName: "Liga 2026",
+  appleWebApp: { capable: true, title: "Liga 2026", statusBarStyle: "black-translucent" },
+  formatDetection: { telephone: false },
+  manifest: "/manifest.json",
+  other: {
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "black-translucent",
+    "msapplication-TileColor": "#00450d",
+    "theme-color": "#00450d",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="es">
+      <head>
+        <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+      </head>
+      <body className="min-h-screen bg-[#fcf9f8] dark:bg-[#1b1c1c] text-[#1b1c1c] dark:text-[#e3e3e3] font-sans antialiased overflow-x-hidden safe-area-top">
+        <TopAppBar />
+        <main className="pb-24 md:pb-8 safe-area-bottom min-h-[calc(100vh-3.5rem)]">{children}</main>
+        <BottomNav />
+        <PwaRegister />
+      </body>
+    </html>
+  );
+}
