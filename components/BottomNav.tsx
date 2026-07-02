@@ -7,9 +7,7 @@ const tabs = [
   { href: '/', label: 'Inicio', icon: '🏠' },
   { href: '/calendario', label: 'Calendario', icon: '📅' },
   { href: '/tabla', label: 'Estadísticas', icon: '📊' },
-  { href: '/playoffs', label: 'Playoffs', icon: '🏆' },
   { href: '/equipos', label: 'Equipos', icon: '👥' },
-  { href: '/admin', label: 'Admin', icon: '⚙️' },
 ]
 
 export default function BottomNav() {
