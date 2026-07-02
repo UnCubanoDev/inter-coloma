@@ -34,9 +34,9 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href={`${basePath}/icons/icon-192.svg`} />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
       </head>
-      <body className="min-h-screen bg-[#fcf9f8] dark:bg-[#1b1c1c] text-[#1b1c1c] dark:text-[#e3e3e3] font-sans antialiased overflow-x-hidden safe-area-top">
+      <body className="flex flex-col h-dvh overflow-hidden bg-[#fcf9f8] dark:bg-[#1b1c1c] text-[#1b1c1c] dark:text-[#e3e3e3] font-sans antialiased safe-area-top">
         <TopAppBar />
-        <main className="pb-24 md:pb-8 safe-area-bottom min-h-[calc(100vh-3.5rem)]">{children}</main>
+        <main className="flex-1 overflow-y-auto">{children}</main>
         <BottomNav />
         <PwaRegister />
       </body>
