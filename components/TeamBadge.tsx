@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { getTeamLogo, getTeamLogoPng } from '@/lib/team-assets'
+import { getTeamLogo, getTeamLogoPng } from '../lib/team-assets'
 
 interface Props {
   numero: number
