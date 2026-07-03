@@ -11,7 +11,7 @@ const hanken = Hanken_Grotesk({ subsets: ["latin"], display: "swap", variable: "
 
 const basePath = process.env.PAGES_BASE_URL
   ? new URL(process.env.PAGES_BASE_URL).pathname.replace(/\/$/, "")
-  : "/inter-coloma";
+  : "";
 
 const siteUrl = process.env.PAGES_BASE_URL || "https://uncubanodev.github.io/inter-coloma";
 
@@ -49,7 +49,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={`${oswald.variable} ${hanken.variable}`}>
+    <html lang="es" className={`${oswald.variable} ${hanken.variable}`} suppressHydrationWarning data-basepath={basePath}>
       <head>
         <link rel="icon" type="image/svg+xml" href={`${basePath}/icons/icon-192.svg`} />
         <link rel="apple-touch-icon" href={`${basePath}/icons/icon-192.svg`} />

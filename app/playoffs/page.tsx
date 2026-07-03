@@ -3,6 +3,7 @@
 import { useInit, usePlayoffs, useStandings } from '@/lib/use-data'
 import { PlayoffMatch } from './PlayoffMatch'
 import { SetupPlayoffs } from './SetupPlayoffs'
+import TeamBadge from '@/components/TeamBadge'
 
 export default function PlayoffsPage() {
   const { ready, error } = useInit()
@@ -40,7 +41,7 @@ export default function PlayoffsPage() {
             <div className="card p-3 mb-5 flex flex-wrap items-center gap-2">
               <span className="text-[0.55rem] font-bold uppercase tracking-wider text-gray-500 mr-1">Clasificados:</span>
               {top6.map((t, i) => (
-                <span key={t.id} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.6rem] font-semibold bg-[#00450d]/10 text-[#00450d]">{i + 1}° {t.nombre}</span>
+                <span key={t.id} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[0.6rem] font-semibold bg-[#00450d]/10 text-[#00450d]"><TeamBadge numero={t.numero} name={t.nombre} size={16} /></span>
               ))}
             </div>
           )}

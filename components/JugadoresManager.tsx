@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { useJugadoresByEquipos } from '@/lib/use-data'
 import { addJugador, updateJugador, deleteJugador } from '@/lib/data'
 import { useAdmin } from './AuthGuard'
+import TeamBadge from '@/components/TeamBadge'
 
 export function JugadoresManager() {
   const admin = useAdmin()
@@ -45,7 +46,7 @@ export function JugadoresManager() {
           <button onClick={() => setExpandedTeam(expandedTeam === equipo.id ? null : equipo.id)}
             className="w-full flex items-center justify-between px-4 md:px-5 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm">{equipo.nombre}</span>
+              <TeamBadge numero={equipo.numero} name={equipo.nombre} />
               <span className="badge-gray text-[0.5rem]">{jugadores.length} jugadores</span>
             </div>
             <span className={`text-gray-400 transition-transform ${expandedTeam === equipo.id ? 'rotate-180' : ''}`}>▾</span>

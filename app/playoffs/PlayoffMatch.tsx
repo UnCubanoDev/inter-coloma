@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { updatePlayoff, advancePlayoff, resetPlayoff } from '@/lib/data'
 import { useAdmin } from '@/components/AuthGuard'
 import { PlayoffRow } from '@/lib/use-data'
+import TeamBadge from '@/components/TeamBadge'
 
 export function PlayoffMatch({ match, onUpdate }: { match: PlayoffRow; onUpdate: () => void }) {
   const admin = useAdmin()
@@ -47,8 +48,8 @@ export function PlayoffMatch({ match, onUpdate }: { match: PlayoffRow; onUpdate:
     return (
       <div className="text-center py-4">
         <div className="text-xs text-gray-400 mb-2">Esperando rival...</div>
-        {match.equipoLocal && <div className="text-sm font-semibold text-gray-600">{match.equipoLocal.nombre}</div>}
-        {match.equipoVisitante && <div className="text-xs text-gray-400 mt-1">vs {match.equipoVisitante.nombre}</div>}
+        {match.equipoLocal && <div className="text-sm font-semibold text-gray-600"><TeamBadge numero={match.equipoLocal.numero} name={match.equipoLocal.nombre} /></div>}
+        {match.equipoVisitante && <div className="text-xs text-gray-400 mt-1">vs <TeamBadge numero={match.equipoVisitante.numero} name={match.equipoVisitante.nombre} /></div>}
       </div>
     )
   }
@@ -66,7 +67,7 @@ export function PlayoffMatch({ match, onUpdate }: { match: PlayoffRow; onUpdate:
       <div className="flex items-center justify-between gap-2 mb-3">
         <div className="flex-1 text-right min-w-0">
           <div className="flex items-center justify-end gap-1">
-            <span className="text-xs md:text-sm font-semibold truncate">{match.equipoLocal!.nombre}</span>
+            <TeamBadge numero={match.equipoLocal!.numero} name={match.equipoLocal!.nombre} />
           </div>
         </div>
         <div className="flex items-center gap-1 flex-shrink-0">
@@ -78,7 +79,7 @@ export function PlayoffMatch({ match, onUpdate }: { match: PlayoffRow; onUpdate:
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1">
-            <span className="text-xs md:text-sm font-semibold truncate">{match.equipoVisitante!.nombre}</span>
+            <TeamBadge numero={match.equipoVisitante!.numero} name={match.equipoVisitante!.nombre} reverse />
           </div>
         </div>
       </div>

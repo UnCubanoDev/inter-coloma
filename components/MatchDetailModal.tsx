@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { useEventos, useJugadores, PartidoRow, EventoRow } from '@/lib/use-data'
 import { addEvento, removeEvento } from '@/lib/data'
 import { useAdmin } from './AuthGuard'
+import TeamBadge from '@/components/TeamBadge'
 
 interface Props {
   match: PartidoRow
@@ -114,7 +115,7 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
           {/* Score header */}
           <div className="flex items-center justify-center gap-4 py-3">
             <div className="text-right flex-1">
-              <p className="text-sm font-bold truncate">{match.equipoLocal.nombre}</p>
+              <p className="text-sm font-bold truncate"><TeamBadge numero={match.equipoLocal.numero} name={match.equipoLocal.nombre} /></p>
             </div>
             <div className="flex items-center gap-3">
               {isPlayed ? (
@@ -126,7 +127,7 @@ export default function MatchDetailModal({ match, open, onClose }: Props) {
               )}
             </div>
             <div className="flex-1">
-              <p className="text-sm font-bold truncate">{match.equipoVisitante.nombre}</p>
+              <p className="text-sm font-bold truncate text-right"><TeamBadge numero={match.equipoVisitante.numero} name={match.equipoVisitante.nombre} reverse /></p>
             </div>
           </div>
 
@@ -193,23 +194,48 @@ function EventosSection({ title, eventos, admin, onRemove }: {
   title: string; eventos: EventoRow[]; admin: boolean; onRemove: (id: number) => void
 }) {
   if (eventos.length === 0) return null
+
+  const grouped = eventos.reduce<Record<number, { nombre: string; tipos: Record<string, EventoRow[]> }>>((acc, ev) => {
+    if (!acc[ev.jugadorId]) acc[ev.jugadorId] = { nombre: ev.jugadorNombre, tipos: {} }
+    if (!acc[ev.jugadorId].tipos[ev.tipo]) acc[ev.jugadorId].tipos[ev.tipo] = []
+    acc[ev.jugadorId].tipos[ev.tipo].push(ev)
+    return acc
+  }, {})
+
   return (
     <div>
       <h3 className="text-[0.6rem] font-bold uppercase tracking-wider text-gray-500 mb-2">{title}</h3>
-      <div className="space-y-1">
-        {eventos.map(ev => (
-          <div key={ev.id} className={`flex items-center justify-between gap-2 px-3 py-1.5 rounded border text-sm ${tipoBg(ev.tipo)}`}>
-            <div className="flex items-center gap-2 min-w-0">
-              <span>{tipoLabels[ev.tipo] || ev.tipo}</span>
-              <span className="font-medium truncate">{ev.jugadorNombre}</span>
-              {ev.tipo === 'autogol' && (
-                <span className="text-[0.5rem] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 border border-orange-300 dark:border-orange-600 px-1 py-0.5 rounded">En contra</span>
-              )}
-              {ev.minuto && <span className="text-[0.6rem] text-gray-500 shrink-0">{ev.minuto}&apos;</span>}
+      <div className="space-y-1.5">
+        {Object.entries(grouped).map(([jugadorId, group]) => (
+          <div key={jugadorId} className="rounded-lg border border-gray-100 dark:border-gray-700/50 overflow-hidden">
+            <p className="text-sm font-bold px-3 pt-2 pb-1 bg-gray-50 dark:bg-gray-800/40">{group.nombre}</p>
+            <div className="px-3 pb-2 space-y-1">
+              {Object.entries(group.tipos).map(([tipo, evs]) => (
+                admin ? (
+                  evs.map(ev => (
+                    <div key={ev.id} className={`flex items-center justify-between gap-2 px-2 py-1 rounded text-sm ${tipoBg(tipo)}`}>
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="shrink-0">{tipoLabels[tipo] || tipo}</span>
+                        {tipo === 'autogol' && (
+                          <span className="text-[0.5rem] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 border border-orange-300 dark:border-orange-600 px-1 py-0.5 rounded">En contra</span>
+                        )}
+                      </div>
+                      <button onClick={() => onRemove(ev.id)} className="text-[0.55rem] font-bold uppercase tracking-wider text-red-600 shrink-0 hover:underline">Eliminar</button>
+                    </div>
+                  ))
+                ) : (
+                  <div key={tipo} className="flex items-center gap-1.5 text-sm px-2 py-0.5">
+                    <span className="shrink-0">{tipoLabels[tipo] || tipo}</span>
+                    {tipo === 'autogol' && (
+                      <span className="text-[0.5rem] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 border border-orange-300 dark:border-orange-600 px-1 py-0.5 rounded">En contra</span>
+                    )}
+                    {evs.length > 1 && (
+                      <span className="text-[0.55rem] font-bold text-gray-400 bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded-full">×{evs.length}</span>
+                    )}
+                  </div>
+                )
+              ))}
             </div>
-            {admin && (
-              <button onClick={() => onRemove(ev.id)} className="text-[0.55rem] font-bold uppercase tracking-wider text-red-600 shrink-0 hover:underline">Eliminar</button>
-            )}
           </div>
         ))}
       </div>

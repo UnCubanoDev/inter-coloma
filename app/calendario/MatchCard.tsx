@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { updatePartido, resetPartido } from '@/lib/data'
 import { useAdmin } from '@/components/AuthGuard'
 import MatchDetailModal from '@/components/MatchDetailModal'
+import TeamBadge from '@/components/TeamBadge'
 import type { PartidoRow } from '@/lib/use-data'
 
 export function MatchCard({ match, onUpdate }: { match: PartidoRow; onUpdate: () => void }) {
@@ -56,7 +57,7 @@ export function MatchCard({ match, onUpdate }: { match: PartidoRow; onUpdate: ()
           <div className="flex items-center gap-3">
             <div className="flex-1 text-right min-w-0">
               <div className="flex items-center justify-end gap-1">
-                <span className="text-sm font-semibold truncate">{match.equipoLocal.nombre}</span>
+                <TeamBadge numero={match.equipoLocal.numero} name={match.equipoLocal.nombre} />
               </div>
             </div>
 
@@ -70,7 +71,7 @@ export function MatchCard({ match, onUpdate }: { match: PartidoRow; onUpdate: ()
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1">
-                <span className="text-sm font-semibold truncate">{match.equipoVisitante.nombre}</span>
+                <TeamBadge numero={match.equipoVisitante.numero} name={match.equipoVisitante.nombre} reverse />
               </div>
             </div>
           </div>

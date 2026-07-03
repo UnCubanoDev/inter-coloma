@@ -1,12 +1,12 @@
 import type { NextConfig } from "next";
 
-const repoName = "/inter-coloma";
-
 const nextConfig: NextConfig = {
   output: "export",
   images: { unoptimized: true },
-  basePath: process.env.PAGES_BASE_URL ? new URL(process.env.PAGES_BASE_URL).pathname : repoName,
-  assetPrefix: process.env.PAGES_BASE_URL ? new URL(process.env.PAGES_BASE_URL).pathname : repoName,
+  ...(process.env.PAGES_BASE_URL ? {
+    basePath: new URL(process.env.PAGES_BASE_URL).pathname,
+    assetPrefix: new URL(process.env.PAGES_BASE_URL).pathname,
+  } : {}),
 };
 
 export default nextConfig;

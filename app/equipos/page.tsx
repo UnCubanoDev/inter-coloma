@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import { useInit, useJugadoresByEquipos } from '@/lib/use-data'
+import TeamBadge from '@/components/TeamBadge'
 
 export default function EquiposPage() {
   const { ready, error } = useInit()
   const { equipos } = useJugadoresByEquipos()
-  const [expanded, setExpanded] = useState<number>(equipos[0]?.equipo.id ?? 1)
+  const [expanded, setExpanded] = useState<Set<number>>(new Set(equipos.map(e => e.equipo.id)))
 
   if (error) return <div className="max-w-6xl mx-auto px-4 py-12 text-center"><p className="text-red-600 font-semibold">Error: {error}</p><p className="text-sm text-gray-500 mt-2">Verifica NEXT_PUBLIC_TURSO_URL y NEXT_PUBLIC_TURSO_TOKEN</p></div>
   if (!ready) return <div className="max-w-6xl mx-auto px-4 py-12 text-center text-gray-400"><p>Cargando...</p></div>
@@ -21,16 +22,16 @@ export default function EquiposPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {equipos.map(({ equipo, jugadores }) => (
           <div key={equipo.id} className="card overflow-hidden">
-            <button onClick={() => setExpanded(expanded === equipo.id ? -1 : equipo.id)}
+            <button onClick={() => setExpanded(prev => { const next = new Set(prev); if (next.has(equipo.id)) next.delete(equipo.id); else next.add(equipo.id); return next })}
               className="w-full flex items-center gap-3 px-4 md:px-5 py-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
               <div className="flex-1 text-left">
-                <h3 className="text-sm font-bold">{equipo.nombre}</h3>
+                <TeamBadge numero={equipo.numero} name={equipo.nombre} />
                 <p className="text-[0.6rem] text-gray-400">{jugadores.length} jugadores</p>
               </div>
-              <span className={`text-gray-400 transition-transform ${expanded === equipo.id ? 'rotate-180' : ''}`}>▾</span>
+              <span className={`text-gray-400 transition-transform ${expanded.has(equipo.id) ? 'rotate-180' : ''}`}>▾</span>
             </button>
 
-            {expanded === equipo.id && (
+            {expanded.has(equipo.id) && (
               <div className="px-4 md:px-5 pb-4">
                 {jugadores.length === 0 ? (
                   <p className="text-sm text-gray-400 text-center py-4">Sin jugadores registrados</p>

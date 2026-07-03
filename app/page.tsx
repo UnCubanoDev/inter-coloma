@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useInit, useStandings, useStats, useGoleadores, usePartidos } from '@/lib/use-data'
+import TeamBadge from '@/components/TeamBadge'
 
 export default function Home() {
   const { ready, error } = useInit()
@@ -17,6 +18,7 @@ export default function Home() {
   if (error) return <div className="max-w-6xl mx-auto px-4 py-12 text-center text-red-600"><p>Error: {error}</p><p className="text-sm mt-2">Verifica las variables NEXT_PUBLIC_TURSO_URL y NEXT_PUBLIC_TURSO_TOKEN</p></div>
   if (!ready) return <div className="max-w-6xl mx-auto px-4 py-12 text-center text-gray-400"><p>Cargando...</p></div>
 
+  const equipoNumeroMap = Object.fromEntries(standings.map(t => [t.id, t.numero]))
   const topScorers = goleadores.slice(0, 5)
   const ultimos = standings.filter(t => t.jj > 0).sort((a, b) => b.pts - a.pts).slice(0, 5)
 
@@ -52,7 +54,7 @@ export default function Home() {
                 <div className="space-y-2 mt-8">
                   {todayMatches.map(m => (
                     <div key={m.id} className="flex items-center justify-between bg-white/10 rounded-lg px-4 py-2.5">
-                      <div className="flex-1 text-sm font-medium truncate">{m.equipoLocal.nombre}</div>
+                      <div className="flex-1 text-sm font-medium truncate"><TeamBadge numero={m.equipoLocal.numero} name={m.equipoLocal.nombre} /></div>
                       <div className="flex items-center gap-2 mx-3 shrink-0">
                         {m.jugado ? (
                           <span className="text-base font-oswald font-bold">{m.golesLocal} - {m.golesVisitante}</span>
@@ -60,7 +62,7 @@ export default function Home() {
                           <span className="text-[0.6rem] text-white/50 uppercase tracking-wider">vs</span>
                         )}
                       </div>
-                      <div className="flex-1 text-sm font-medium truncate text-right">{m.equipoVisitante.nombre}</div>
+                      <div className="flex-1 text-sm font-medium truncate text-right"><TeamBadge numero={m.equipoVisitante.numero} name={m.equipoVisitante.nombre} reverse /></div>
                     </div>
                   ))}
                 </div>
@@ -95,7 +97,7 @@ export default function Home() {
                 <div key={t.id} className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[0.6rem] font-bold ${i < 6 ? 'bg-[#00450d] text-white' : 'bg-gray-200 text-gray-500'}`}>{i + 1}</span>
-                    <span className="truncate">{t.nombre}</span>
+                    <TeamBadge numero={t.numero} name={t.nombre} size={18} />
                   </div>
                   <span className="font-oswald font-bold text-base">{t.pts}</span>
                 </div>
@@ -120,7 +122,7 @@ export default function Home() {
                   <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-[0.65rem] font-bold ${i === 0 ? 'bg-yellow-400 text-yellow-900' : i === 1 ? 'bg-gray-300 text-gray-700' : 'bg-amber-600 text-white'}`}>{i + 1}</span>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium truncate">{p.nombre}</div>
-                    <div className="text-[0.6rem] text-gray-400 truncate">{p.numero ? `#${p.numero} · ` : ''}{p.equipoNombre}</div>
+                    <div className="text-[0.6rem] text-gray-400 truncate"><TeamBadge numero={equipoNumeroMap[p.equipoId]} name={p.equipoNombre} size={14} /></div>
                   </div>
                   <span className="font-oswald font-bold text-lg">{p.goles}</span>
                 </div>

@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { resetPartido, deletePartido } from '@/lib/data'
 import { useAdmin } from '@/components/AuthGuard'
 import { PartidoRow } from '@/lib/use-data'
+import TeamBadge from '@/components/TeamBadge'
 
 function formatDate(dateStr: string) {
   const d = new Date(dateStr + 'T12:00:00')
@@ -40,7 +41,7 @@ export function AdminMatchRow({ match, onUpdate }: { match: PartidoRow; onUpdate
       <td className="px-3 py-3 text-gray-600 dark:text-gray-400 text-[0.7rem] whitespace-nowrap">
         {formatDate(match.fecha)} <span className="text-gray-300">#{match.orden}</span>
       </td>
-      <td className="px-2 py-3 text-sm min-w-[5rem]">{match.equipoLocal.nombre}</td>
+      <td className="px-2 py-3 text-sm min-w-[5rem]"><TeamBadge numero={match.equipoLocal.numero} name={match.equipoLocal.nombre} /></td>
       <td className="px-2 py-3 text-center whitespace-nowrap">
         {match.jugado ? (
           <span className="font-oswald font-bold text-base">{match.golesLocal} - {match.golesVisitante}</span>
@@ -48,7 +49,7 @@ export function AdminMatchRow({ match, onUpdate }: { match: PartidoRow; onUpdate
           <span className="text-gray-300 text-[0.6rem] font-semibold uppercase tracking-wider">vs</span>
         )}
       </td>
-      <td className="px-2 py-3 text-sm text-right min-w-[5rem]">{match.equipoVisitante.nombre}</td>
+      <td className="px-2 py-3 text-sm text-right min-w-[5rem]"><TeamBadge numero={match.equipoVisitante.numero} name={match.equipoVisitante.nombre} reverse /></td>
       <td className="px-2 py-3 text-center">
         {match.jugado ? <span className="badge-green">Jugado</span> : <span className="badge-gray">Pendiente</span>}
       </td>

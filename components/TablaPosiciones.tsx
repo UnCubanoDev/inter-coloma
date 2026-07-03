@@ -1,6 +1,7 @@
 'use client'
 
 import { useStandings } from '@/lib/use-data'
+import TeamBadge from '@/components/TeamBadge'
 
 export default function TablaPosiciones({ highlightTop6 = true }: { highlightTop6?: boolean }) {
   const { standings, loading } = useStandings()
@@ -35,7 +36,7 @@ export default function TablaPosiciones({ highlightTop6 = true }: { highlightTop
                 </td>
                 <td className="px-3 py-3">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-semibold text-sm">{team.nombre}</span>
+                    <TeamBadge numero={team.numero} name={team.nombre} size={20} />
                   </div>
                 </td>
                 <td className="px-3 py-3 text-center font-medium">{team.jj}</td>

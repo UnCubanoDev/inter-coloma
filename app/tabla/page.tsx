@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useInit, useStandings } from '@/lib/use-data'
 import { useGoleadores, useAsistidores, useTarjetas, useAutogoles } from '@/lib/use-data'
 import TablaPosiciones from '@/components/TablaPosiciones'
+import TeamBadge from '@/components/TeamBadge'
 
 type Tab = 'posiciones' | 'goleadores' | 'asistidores' | 'tarjetas' | 'autogoles'
 
@@ -15,6 +16,8 @@ export default function TablaPage() {
   const { tarjetas } = useTarjetas()
   const { autogoles } = useAutogoles()
   const [tab, setTab] = useState<Tab>('posiciones')
+
+  const equipoNumeroMap = Object.fromEntries(standings.map(t => [t.id, t.numero]))
 
   if (error) return <div className="max-w-6xl mx-auto px-4 py-12 text-center"><p className="text-red-600 font-semibold">Error: {error}</p><p className="text-sm text-gray-500 mt-2">Verifica NEXT_PUBLIC_TURSO_URL y NEXT_PUBLIC_TURSO_TOKEN</p></div>
   if (!ready) return <div className="max-w-6xl mx-auto px-4 py-12 text-center text-gray-400"><p>Cargando...</p></div>
@@ -45,8 +48,9 @@ export default function TablaPage() {
         <LeaderboardCard
           title="Autogoles"
           emptyMsg="No hay autogoles registrados"
+          equipoNumeroMap={equipoNumeroMap}
           rows={autogoles.map(a => ({
-            key: a.jugadorId, nombre: a.nombre, equipo: a.equipoNombre, numero: a.numero,
+            key: a.jugadorId, nombre: a.nombre, equipo: a.equipoNombre, equipoId: a.equipoId, numero: a.numero,
             value: a.goles, label: 'autogoles',
           }))}
         />
@@ -62,8 +66,9 @@ export default function TablaPage() {
         <LeaderboardCard
           title="Máximos Goleadores"
           emptyMsg="No hay goles registrados"
+          equipoNumeroMap={equipoNumeroMap}
           rows={goleadores.map(g => ({
-            key: g.jugadorId, nombre: g.nombre, equipo: g.equipoNombre, numero: g.numero,
+            key: g.jugadorId, nombre: g.nombre, equipo: g.equipoNombre, equipoId: g.equipoId, numero: g.numero,
             value: g.goles, label: 'goles',
           }))}
         />
@@ -73,8 +78,9 @@ export default function TablaPage() {
         <LeaderboardCard
           title="Máximos Asistidores"
           emptyMsg="No hay asistencias registradas"
+          equipoNumeroMap={equipoNumeroMap}
           rows={asistidores.map(a => ({
-            key: a.jugadorId, nombre: a.nombre, equipo: a.equipoNombre, numero: a.numero,
+            key: a.jugadorId, nombre: a.nombre, equipo: a.equipoNombre, equipoId: a.equipoId, numero: a.numero,
             value: a.asistencias, label: 'asistencias',
           }))}
         />
@@ -107,7 +113,7 @@ export default function TablaPage() {
                     <tr key={t.jugadorId} className="border-t border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                       <td className="px-3 py-3 text-[0.6rem] font-bold text-gray-400">{i + 1}</td>
                       <td className="px-3 py-3 font-medium">{t.nombre}</td>
-                      <td className="px-3 py-3 text-gray-500">{t.equipoNombre}</td>
+                      <td className="px-3 py-3 text-gray-500"><TeamBadge numero={equipoNumeroMap[t.equipoId]} name={t.equipoNombre} size={16} /></td>
                       <td className="px-3 py-3 text-center font-oswald font-bold text-yellow-600">{t.amarillas}</td>
                       <td className="px-3 py-3 text-center font-oswald font-bold text-red-600">{t.rojas}</td>
                       <td className="px-3 py-3 text-center font-oswald font-bold">{t.amarillas + t.rojas}</td>
@@ -123,9 +129,9 @@ export default function TablaPage() {
   )
 }
 
-function LeaderboardCard({ title, emptyMsg, rows }: {
-  title: string; emptyMsg: string
-  rows: { key: number; nombre: string; equipo: string; numero: number | null; value: number; label: string }[]
+function LeaderboardCard({ title, emptyMsg, rows, equipoNumeroMap }: {
+  title: string; emptyMsg: string; equipoNumeroMap: Record<number, number>
+  rows: { key: number; nombre: string; equipo: string; equipoId: number; numero: number | null; value: number; label: string }[]
 }) {
   return (
     <div className="card overflow-hidden">
@@ -146,7 +152,7 @@ function LeaderboardCard({ title, emptyMsg, rows }: {
               }`}>{i + 1}</span>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium truncate">{r.nombre}</div>
-                <div className="text-[0.6rem] text-gray-400">{r.equipo}{r.numero ? ` · #${r.numero}` : ''}</div>
+                <div className="text-[0.6rem] text-gray-400"><TeamBadge numero={equipoNumeroMap[r.equipoId]} name={r.equipo} size={14} />{r.numero ? ` · #${r.numero}` : ''}</div>
               </div>
               <div className="text-right shrink-0">
                 <div className="font-oswald font-bold text-lg">{r.value}</div>
